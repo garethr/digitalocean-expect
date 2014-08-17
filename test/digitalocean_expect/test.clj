@@ -21,3 +21,8 @@
 
 ; check node with specific name
 (expect 0 (count (droplet-by-name creds "brian")))
+(expect 2 (count nodes))
+
+; check backups are enabled for all nodes
+(expect true (from-each
+  [node (map :backups_active nodes)] node))
