@@ -5,6 +5,7 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :plugins [
             [lein-expectations "0.0.7"]
+            [lein-kibit "0.0.8"]
             [lein-autoexpect "1.0"]]
   :dependencies [
                  [org.clojure/clojure "1.5.1"]
