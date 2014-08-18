@@ -6,14 +6,14 @@
 (def nodes (droplets (env :digitalocean-client-id) (env :digitalocean-api-key)))
 (def creds {:client (env :digitalocean-client-id) :key (env :digitalocean-api-key)})
 
-(def not-nil? (complement nil?))
-
 (defn nodes-by-status [status]
   (droplets-with-status creds status))
 
 (def stopped-nodes (nodes-by-status "stopped"))
 (def active-nodes (nodes-by-status "active"))
 
+; these magic numbers are unfortunate details
+; of the DigitalOcean API
 (defn small? [size] (= 66 size))
 (defn medium? [size] (= 62 size))
 (defn large? [size] (= 60 size))
@@ -31,11 +31,11 @@
 
 ; check backups are disabled for all nodes
 (expect false? (from-each
-  [node (map :backups_active nodes)] node))
+  [node nodes] (:backups_active node)))
 
 ; check private networks are disabled for all nodes
 (expect nil? (from-each
-  [node (map :private_ip_address nodes)] node))
+  [node nodes] (:private_ip_address node)))
 
 ; only use prescribed sizes
 (expect 0
