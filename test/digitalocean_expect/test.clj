@@ -14,11 +14,19 @@
 
 ; these magic numbers are unfortunate details
 ; of the DigitalOcean API
-(defn small? [size] (= 66 size))
-(defn medium? [size] (= 62 size))
-(defn large? [size] (= 60 size))
-(defn london? [region] (= 7 region))
-(defn sf? [region] (= 3 region))
+
+(def DIGITALOCEAN-SMALL-ID 66)
+(def DIGITALOCEAN-MEDIUM-ID 62)
+(def DIGITALOCEAN-LARGE-ID 60)
+
+(def DIGITALOCEAN-LONDON-ID 7)
+(def DIGITALOCEAN-SANFRANCISCO-ID 3)
+
+(defn small? [size] (= DIGITALOCEAN-SMALL-ID size))
+(defn medium? [size] (= DIGITALOCEAN-MEDIUM-ID size))
+(defn large? [size] (= DIGITALOCEAN-LARGE-ID size))
+(defn london? [region] (= DIGITALOCEAN-LONDON-ID region))
+(defn sf? [region] (= DIGITALOCEAN-SANFRANCISCO-ID region))
 
 ; not more than 100 nodes
 (expect (< (count nodes) 100))
