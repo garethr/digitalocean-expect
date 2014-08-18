@@ -40,15 +40,15 @@
 ; only use prescribed sizes
 (expect 0
   (count
-    (filter (complement large?)
-      (filter (complement medium?)
-        (filter (complement small?) (map :size_id nodes))))))
+    (remove large?
+      (remove medium?
+        (remove small? (map :size_id nodes))))))
 
 ; only use prescribed regions
 (expect 0
   (count
-    (filter (complement london?)
-      (filter (complement sf?) (map :region_id nodes)))))
+    (remove london?
+      (remove sf? (map :region_id nodes)))))
 
 ; no more than 2 large nodes
 (expect (< (count (filter large? (map :size_id nodes))) 2))
