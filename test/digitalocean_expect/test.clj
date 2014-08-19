@@ -1,7 +1,7 @@
 (ns digitalocean-expect.test
   (:require [digitalocean.droplet :refer :all]
-            [environ.core :refer [env]])
-  (:use expectations))
+            [environ.core :refer [env]]
+            [expectations :refer [expect from-each]]))
 
 (def nodes (droplets (env :digitalocean-client-id) (env :digitalocean-api-key)))
 (def creds {:client (env :digitalocean-client-id) :key (env :digitalocean-api-key)})
