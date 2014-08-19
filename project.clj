@@ -6,6 +6,7 @@
   :plugins [
             [lein-expectations "0.0.7"]
             [lein-kibit "0.0.8"]
+            [jonase/eastwood "0.1.4"]
             [lein-autoexpect "1.0"]]
   :dependencies [
                  [org.clojure/clojure "1.5.1"]
