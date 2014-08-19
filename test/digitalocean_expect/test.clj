@@ -12,21 +12,27 @@
 (def stopped-nodes (nodes-by-status "stopped"))
 (def active-nodes (nodes-by-status "active"))
 
-; these magic numbers are unfortunate details
-; of the DigitalOcean API
+(def DIGITALOCEAN-SIZES
+  {:small  66
+   :medium 62
+   :large  60})
 
-(def DIGITALOCEAN-SMALL-ID 66)
-(def DIGITALOCEAN-MEDIUM-ID 62)
-(def DIGITALOCEAN-LARGE-ID 60)
+(def DIGITALOCEAN-LOCATIONS
+  {:london       7
+   :sanfrancisco 3})
 
-(def DIGITALOCEAN-LONDON-ID 7)
-(def DIGITALOCEAN-SANFRANCISCO-ID 3)
+(defn size-id [size id]
+  (= (size DIGITALOCEAN-SIZES) id))
 
-(defn small? [size] (= DIGITALOCEAN-SMALL-ID size))
-(defn medium? [size] (= DIGITALOCEAN-MEDIUM-ID size))
-(defn large? [size] (= DIGITALOCEAN-LARGE-ID size))
-(defn london? [region] (= DIGITALOCEAN-LONDON-ID region))
-(defn sf? [region] (= DIGITALOCEAN-SANFRANCISCO-ID region))
+(defn small? [id] (size-id :small id))
+(defn medium? [id] (size-id :medium id))
+(defn large? [id] (size-id :large id))
+
+(defn location-id [location region-id]
+  (= (location DIGITALOCEAN-LOCATIONS) region-id))
+
+(defn london? [region] (location-id :london region))
+(defn sf? [region] (location-id :sanfrancisco region))
 
 ; not more than 100 nodes
 (expect (< (count nodes) 100))
