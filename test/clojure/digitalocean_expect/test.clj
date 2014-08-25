@@ -1,4 +1,4 @@
-(ns digitalocean-expect.test
+(ns clojure.digitalocean-expect.test
   (:require [digitalocean.droplet :refer :all]
             [environ.core :refer [env]]
             [expectations :refer [expect from-each]]))
