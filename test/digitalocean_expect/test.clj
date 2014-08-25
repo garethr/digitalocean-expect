@@ -43,12 +43,12 @@
 ; check node with specific name
 (expect (droplet-by-name creds "test-digitalocean"))
 
-; check backups are disabled for all nodes
-(expect false? (from-each
+; check backups are enabled for all nodes
+(expect true? (from-each
   [node nodes] (:backups_active node)))
 
-; check private networks are disabled for all nodes
-(expect nil? (from-each
+; check private networks are enabled for all nodes
+(expect (complement nil?) (from-each
   [node nodes] (:private_ip_address node)))
 
 ; only use prescribed sizes
