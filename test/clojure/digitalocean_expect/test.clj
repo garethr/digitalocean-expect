@@ -34,6 +34,9 @@
 (defn london? [region] (location-id :london region))
 (defn sf? [region] (location-id :sanfrancisco region))
 
+(defn valid-name? [name]
+  (re-matches #"test|staging|prod+-[a-z]+" name))
+
 ; not more than 100 nodes
 (expect (< (count nodes) 100))
 
@@ -66,3 +69,6 @@
 
 ; no more than 2 large nodes
 (expect (< (count (filter large? (map :size_id nodes))) 2))
+
+; check names match prescribed pattern
+(expect (every? valid-name? (map :name node)))
