@@ -71,4 +71,4 @@
 (expect (< (count (filter large? (map :size_id nodes))) 2))
 
 ; check names match prescribed pattern
-(expect (every? valid-name? (map :name node)))
+(expect (every? valid-name? (map :name nodes)))
