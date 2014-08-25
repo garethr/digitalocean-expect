@@ -30,7 +30,7 @@ pretty expressive code:
 ```
 
 The current [full test
-suite](https://github.com/garethr/digitalocean-expect/blob/master/test/digitalocean_expect/test.clj)
+suite](https://github.com/garethr/digitalocean-expect/blob/master/test/clojure/digitalocean_expect/test.clj)
 is available in the repository.
 
 ## Running
