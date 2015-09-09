@@ -1,41 +1,43 @@
 (ns clojure.digitalocean-expect.test
-  (:require [digitalocean.droplet :refer :all]
+  (:require [digitalocean.v2.core :as do]
             [environ.core :refer [env]]
             [expectations :refer [expect from-each]]))
 
-(def nodes (droplets (env :digitalocean-client-id) (env :digitalocean-api-key)))
-(def creds {:client (env :digitalocean-client-id) :key (env :digitalocean-api-key)})
+(defonce token (env :digitalocean-access-token))
 
-(defn nodes-by-status [status]
-  (droplets-with-status creds status))
+(def nodes ((do/droplets token) :droplets))
 
-(def stopped-nodes (nodes-by-status "stopped"))
-(def active-nodes (nodes-by-status "active"))
+(defn active? [node]
+  (= (:status node) "active"))
 
-(def DIGITALOCEAN-SIZES
-  {:small  66
-   :medium 62
-   :large  60})
+(defn stopped? [node]
+  (= (:status node) "stopped"))
 
-(def DIGITALOCEAN-LOCATIONS
-  {:london       7
-   :sanfrancisco 3})
+(def active-nodes (filter active? nodes))
 
-(defn size-id [size id]
-  (= (size DIGITALOCEAN-SIZES) id))
+(def stopped-nodes (filter stopped? nodes))
 
-(defn small? [id] (size-id :small id))
-(defn medium? [id] (size-id :medium id))
-(defn large? [id] (size-id :large id))
+(defn small? [node] (= (:size_slug node) "512mb" ))
+(defn medium? [node] (= (:size_slug node) "gb" ))
+(defn large? [node] (= (:size_slug node) "8gb" ))
 
-(defn location-id [location region-id]
-  (= (location DIGITALOCEAN-LOCATIONS) region-id))
+(defn london? [node] (= (:slug (:region node)) "lon1"))
+(defn sf? [node] (= (:slug (:region node)) "sfo1"))
 
-(defn london? [region] (location-id :london region))
-(defn sf? [region] (location-id :sanfrancisco region))
+(defn valid-name? [node]
+  (re-matches #"test|staging|prod+-[a-z]+" (:name node)))
 
-(defn valid-name? [name]
-  (re-matches #"test|staging|prod+-[a-z]+" name))
+(defn using-ubuntu? [node]
+  (= "Ubuntu" (:distribution (:image node))))
+
+(defn feature-named? [node feature]
+  (.contains (:features node) feature))
+
+(defn backups-enabled? [node]
+  (feature-named? node "backups"))
+
+(defn private-networking-enabled? [node]
+  (feature-named? node "private_networking"))
 
 ; not more than 100 nodes
 (expect (< (count nodes) 100))
@@ -44,31 +46,32 @@
 (expect 0 (count stopped-nodes))
 
 ; check node with specific name
-(expect (droplet-by-name creds "test-digitalocean"))
+(expect true (.contains (map :name nodes) "Test"))
 
 ; check backups are enabled for all nodes
-(expect true? (from-each
-  [node nodes] (:backups_active node)))
+(expect (every? backups-enabled? nodes))
 
 ; check private networks are enabled for all nodes
-(expect (complement nil?) (from-each
-  [node nodes] (:private_ip_address node)))
+(expect (every? private-networking-enabled? nodes))
 
 ; only use prescribed sizes
 (expect 0
   (count
     (remove large?
       (remove medium?
-        (remove small? (map :size_id nodes))))))
+        (remove small? nodes)))))
 
 ; only use prescribed regions
 (expect 0
   (count
     (remove london?
-      (remove sf? (map :region_id nodes)))))
+      (remove sf? nodes))))
 
 ; no more than 2 large nodes
-(expect (< (count (filter large? (map :size_id nodes))) 2))
+(expect (< (count (filter large? nodes)) 2))
 
 ; check names match prescribed pattern
-(expect (every? valid-name? (map :name nodes)))
+(expect (every? valid-name? nodes))
+
+; check all droplets are using the correct OS
+(expect (every? using-ubuntu? nodes))
