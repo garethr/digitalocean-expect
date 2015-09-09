@@ -36,9 +36,9 @@ is available in the repository.
 ## Running
 
 In order to run the tests yourself you'll need a DigitalOcean account.
-The underlying client still uses the V1 API so you need to set
-`DIGITALOCEAN-CLIENT-ID` and `DIGITALOCEAN-API-KEY` environmnt
-variables. Alternatively you can use `.lein-env` if you know what you're doing.
+The underlying client uses the V2 API so you need to set a
+`DIGITALOCEAN-ACCESS-TOKEN` environment variables. Alternatively you can use
+`.lein-env` if you know what you're doing.
 
 You can run the tests with the following. Note that the specific tests
 here are unlikely to pass with anything but the small test dataset I
